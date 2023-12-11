@@ -28,11 +28,6 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('user/delete', 'UserController@delete');
         $router->post('user/logout', 'UserController@logout');
 
-        // PARTICIPANT
-        $router->post('participant/update', 'ParticipantController@update');
-        $router->post('participant/delete', 'ParticipantController@delete');
-        $router->post('participant/login', 'ParticipantController@login');
-
         // EVENT
         $router->get('event/get-events', 'EventController@getEvent');
         $router->post('event/create', 'EventController@store');

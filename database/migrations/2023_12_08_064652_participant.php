@@ -18,7 +18,6 @@ return new class extends Migration
             $table->text('whatsapp')->unique();
             $table->text('NIP')->unique();
             $table->text('keterangan')->nullable();
-            $table->rememberToken()->nullable();
             $table->timestamps();
         });
     }

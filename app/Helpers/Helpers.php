@@ -5,7 +5,6 @@ namespace App\Helpers;
 use App\Models\Event;
 use App\Models\Participant;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 
 class Helpers
 {
