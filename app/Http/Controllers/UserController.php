@@ -81,7 +81,6 @@ class UserController extends Controller
             'id'        => 'required',
             'name'      => 'required',
             'email'     => 'required|email:rfc,dns',
-            'password'  => 'required'
         ]);
 
         $check = User::where('id', $data['id'])->first();
