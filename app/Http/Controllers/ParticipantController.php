@@ -57,9 +57,9 @@ class ParticipantController extends Controller
 
         $this->validate($request, [
             'id'        => 'required',
-            'name'      => 'required|unique:App\Models\Participant,name',
-            'whatsapp'  => 'required|unique:App\Models\participant,whatsapp',
-            'NIP'       => 'required|unique:App\Models\Participant,NIP',
+            // 'name'      => 'required|unique:App\Models\Participant,name',
+            // 'whatsapp'  => 'required|unique:App\Models\participant,whatsapp',
+            // 'NIP'       => 'required|unique:App\Models\Participant,NIP',
         ]);
 
         return Helpers::updateParticipant($data);

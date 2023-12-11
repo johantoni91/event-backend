@@ -16,7 +16,7 @@ return new class extends Migration
             $table->text('absen');
             $table->text('makan');
             $table->text('souvenir');
-            $table->date('sheckout');
+            $table->date('checkout');
         });
     }
 

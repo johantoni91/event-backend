@@ -4,21 +4,23 @@ namespace App\Helpers;
 
 use App\Models\Event;
 use App\Models\Participant;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class Helpers
 {
-    //USERS
-    public static function endPointUser($data)
+
+    public static function endPointRegistrationUser($data, $content)
     {
         $res = [];
         if ($data) {
             $res = [
-                'message'   => 'Success registration',
+                'message'   => 'Success ' . $content,
                 'status'    => 200
             ];
         } else {
             $res = [
-                'message'   => 'Failed registration',
+                'message'   => 'Failed ' . $content,
                 'status'    => 400
             ];
         }
@@ -29,11 +31,23 @@ class Helpers
     {
         $res = [];
         if ($check) {
-            $check->update($data);
-            $res = [
-                'message'   => 'Success update data ' . $data['name'],
-                'status'    => 200
-            ];
+            if ($data['password'] == null) {
+                $check->update([
+                    'name'  => $data['name'],
+                    'email' => $data['email']
+                ]);
+                $res = [
+                    'message'   => 'Success update data ' . $data['name'],
+                    'status'    => 200
+                ];
+            } else {
+                $check->update($data);
+                $check->save();
+                $res = [
+                    'message'   => 'Success update data ' . $data['name'],
+                    'status'    => 200
+                ];
+            }
         } else {
             $res = [
                 'message'   => 'Failed update data user',
@@ -124,8 +138,33 @@ class Helpers
     public static function updateParticipant($data)
     {
         $participant = Participant::where('id', $data['id'])->first();
-        if ($participant) {
-            $participant->update($data);
+        switch ($data) {
+            case ($data['name'] == null):
+                $participant->update([
+                    'whatsapp'  => $data['whatsapp'],
+                    'NIP'  => $data['NIP'],
+                    'keterangan'  => $data['keterangan'],
+                ]);
+            case ($data['whatsapp'] == null):
+                $participant->update([
+                    'name'  => $data['name'],
+                    'NIP'  => $data['NIP'],
+                    'keterangan'  => $data['keterangan'],
+                ]);
+            case ($data['NIP'] == null):
+                $participant->update([
+                    'whatsapp'  => $data['whatsapp'],
+                    'name'  => $data['name'],
+                    'keterangan'  => $data['keterangan'],
+                ]);
+            case ($data['keterangan'] == null):
+                $participant->update([
+                    'whatsapp'  => $data['whatsapp'],
+                    'NIP'  => $data['NIP'],
+                    'name'  => $data['name'],
+                ]);
+            default:
+                $participant->update($data);
         }
         return Helpers::endPointParticipant('Update participant ', $participant, $participant['name']);
     }
@@ -167,5 +206,20 @@ class Helpers
             );
         }
         return Helpers::endPointEvent('Update event ', $event);
+    }
+
+    public static function endPointSession($data)
+    {
+        if ($data) {
+            return response()->json($data, 200);
+        } else {
+            return response()->json('Failed get table', 400);
+        }
+    }
+
+    public static function postSession($data, $table)
+    {
+        $data_table = DB::table($table)->insert($data);
+        return response()->json($data_table, 200);
     }
 }
