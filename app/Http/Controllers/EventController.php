@@ -21,19 +21,13 @@ class EventController extends Controller
     function store(Request $request)
     {
         $data = [
-            'participants_id'   => $request->participants_id,
             'event'             => $request->event,
             'location'          => $request->location,
-            'start'             => $request->start,
-            'end'               => $request->end
         ];
 
         $this->validate($request, [
-            'participants_id'   => 'required',
             'event'             => 'required',
             'location'          => 'required',
-            'start'             => 'required|date',
-            'end'               => 'required|date'
         ]);
 
         return Helpers::EventHandler($data);
@@ -42,19 +36,13 @@ class EventController extends Controller
     function update(Request $request)
     {
         $data = [
-            'participants_id'   => $request->participants_id,
             'event'             => $request->event,
             'location'          => $request->location,
-            'start'             => $request->start,
-            'end'               => $request->end
         ];
 
         $this->validate($request, [
-            'participants_id'   => 'required',
             'event'             => 'required',
             'location'          => 'required',
-            'start'             => 'required|date',
-            'end'               => 'required|date'
         ]);
 
         return Helpers::EventHandlerUpdate($data);

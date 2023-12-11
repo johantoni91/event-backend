@@ -45,25 +45,25 @@ class ParticipantController extends Controller
         return Helpers::insertParticipant($data);
     }
 
-    // function update(Request $request)
-    // {
-    //     $data = [
-    //         'id'         => $request->id,
-    //         'name'       => $request->name,
-    //         'whatsapp'   => $request->whatsapp,
-    //         'NIP'        => $request->NIP,
-    //         'keterangan' => $request->keterangan,
-    //     ];
+    function update(Request $request)
+    {
+        $data = [
+            'id'         => $request->id,
+            'name'       => $request->name,
+            'whatsapp'   => $request->whatsapp,
+            'NIP'        => $request->NIP,
+            'keterangan' => $request->keterangan,
+        ];
 
-    //     $this->validate($request, [
-    //         'id'        => 'required',
-    //         // 'name'      => 'required|unique:App\Models\Participant,name',
-    //         // 'whatsapp'  => 'required|unique:App\Models\participant,whatsapp',
-    //         // 'NIP'       => 'required|unique:App\Models\Participant,NIP',
-    //     ]);
+        $this->validate($request, [
+            'id'        => 'required',
+            // 'name'      => 'required|unique:App\Models\Participant,name',
+            // 'whatsapp'  => 'required|unique:App\Models\participant,whatsapp',
+            // 'NIP'       => 'required|unique:App\Models\Participant,NIP',
+        ]);
 
-    //     return Helpers::updateParticipant($data);
-    // }
+        return Helpers::updateParticipant($data);
+    }
 
     function delete(Request $request)
     {
