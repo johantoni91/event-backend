@@ -16,6 +16,8 @@ return new class extends Migration
             $table->id();
             $table->text('event');
             $table->text('location');
+            $table->text('start');
+            $table->text('end');
             $table->timestamps();
         });
     }

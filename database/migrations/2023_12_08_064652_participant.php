@@ -16,7 +16,7 @@ return new class extends Migration
             $table->id();
             $table->text('name')->unique();
             $table->text('whatsapp')->unique();
-            $table->text('NIP')->unique();
+            $table->text('NIP')->uniqid();
             $table->text('keterangan')->nullable();
             $table->timestamps();
         });

@@ -137,33 +137,32 @@ class Helpers
     public static function updateParticipant($data)
     {
         $participant = Participant::where('id', $data['id'])->first();
-        switch ($data) {
-            case ($data['name'] == null):
-                $participant->update([
-                    'whatsapp'  => $data['whatsapp'],
-                    'NIP'  => $data['NIP'],
-                    'keterangan'  => $data['keterangan'],
-                ]);
-            case ($data['whatsapp'] == null):
-                $participant->update([
-                    'name'  => $data['name'],
-                    'NIP'  => $data['NIP'],
-                    'keterangan'  => $data['keterangan'],
-                ]);
-            case ($data['NIP'] == null):
-                $participant->update([
-                    'whatsapp'  => $data['whatsapp'],
-                    'name'  => $data['name'],
-                    'keterangan'  => $data['keterangan'],
-                ]);
-            case ($data['keterangan'] == null):
-                $participant->update([
-                    'whatsapp'  => $data['whatsapp'],
-                    'NIP'  => $data['NIP'],
-                    'name'  => $data['name'],
-                ]);
-            default:
-                $participant->update($data);
+        if ($data['name'] == null) {
+            $participant->update([
+                'whatsapp'  => $data['whatsapp'],
+                'NIP'  => $data['NIP'],
+                'keterangan'  => $data['keterangan'],
+            ]);
+        } elseif ($data['whatsapp'] == null) {
+            $participant->update([
+                'name'  => $data['name'],
+                'NIP'  => $data['NIP'],
+                'keterangan'  => $data['keterangan'],
+            ]);
+        } elseif ($data['NIP'] == null) {
+            $participant->update([
+                'whatsapp'  => $data['whatsapp'],
+                'name'  => $data['name'],
+                'keterangan'  => $data['keterangan'],
+            ]);
+        } elseif ($data['keterangan'] == null) {
+            $participant->update([
+                'whatsapp'  => $data['whatsapp'],
+                'NIP'  => $data['NIP'],
+                'name'  => $data['name'],
+            ]);
+        } else {
+            $participant->update($data);
         }
         return Helpers::endPointParticipant('Update participant ', $participant, $participant['name']);
     }

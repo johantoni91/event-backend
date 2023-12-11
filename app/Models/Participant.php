@@ -10,4 +10,9 @@ class Participant extends Model
     protected $fillable = [
         'name', 'whatsapp', 'keterangan', 'NIP'
     ];
+
+    public function events()
+    {
+        return $this->belongsToMany(Attendance::class, 'NIP');
+    }
 }
