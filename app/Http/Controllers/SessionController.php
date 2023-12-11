@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Helpers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -14,30 +15,48 @@ class SessionController extends Controller
     function getSession()
     {
         $sessions = DB::table($this->table_session)->get();
-        if ($sessions) {
-            return response()->json($sessions, 200);
-        } else {
-            return response()->json('Failed get sessions table', 400);
-        }
+        return Helpers::endPointSession($sessions);
     }
 
     function getEventSession()
     {
         $event_session = DB::table($this->table_event_session)->get();
-        if ($event_session) {
-            return response()->json($event_session, 200);
-        } else {
-            return response()->json('Failed get event sessions table', 400);
-        }
+        return Helpers::endPointSession($event_session);
     }
 
     function getAttendance()
     {
         $attendance = DB::table($this->table_attendance)->get();
-        if ($attendance) {
-            return response()->json($attendance, 200);
-        } else {
-            return response()->json('Failed get attendances table', 400);
-        }
+        return Helpers::endPointSession($attendance);
+    }
+
+    function postSession(Request $request)
+    {
+        $data = [
+            'absen'     => $request->absen,
+            'makan'     => $request->makan,
+            'souvenir'  => $request->souvenir,
+            'checkout'  => $request->checkout,
+        ];
+        return Helpers::postSession($data, $this->table_session);
+    }
+
+    function postEventSession(Request $request)
+    {
+        $data = [
+            'events_id'     => $request->events_id,
+            'sessions_id'   => $request->sessions_id
+        ];
+        return Helpers::postSession($data, $this->table_event_session);
+    }
+
+    function postAttendance(Request $request)
+    {
+        $data = [
+            'participants_id'   => $request->participants_id,
+            'events_id'         => $request->events_id,
+            'sessions_id'       => $request->sessions_id
+        ];
+        return Helpers::postSession($data, $this->table_attendance);
     }
 }
