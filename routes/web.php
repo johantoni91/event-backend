@@ -15,22 +15,31 @@
 
 $router->group(['prefix' => 'api'], function () use ($router) {
     // AUTH
-    $router->get('user/get-users', 'UserController@index');
     $router->post('user/register', 'UserController@register');
     $router->post('user/login', 'UserController@login');
-    $router->post('user/update', 'UserController@update');
-    $router->post('user/delete', 'UserController@delete');
-    // $router->post('user/logout', 'UserController@logout');
 
-    // PARTICIPANT
-    $router->get('participant/get-participants', 'ParticipantController@index');
-    $router->post('participant/store', 'ParticipantController@store');
-    $router->post('participant/update', 'ParticipantController@update');
-    $router->post('participant/delete', 'ParticipantController@delete');
+    $router->group(['middleware' => 'auth'], function () use ($router) {
+        $router->get('user/get-users', 'UserController@index');
+        $router->post('user/update', 'UserController@update');
+        $router->post('user/delete', 'UserController@delete');
+        $router->post('user/logout', 'UserController@logout');
 
-    // EVENT
-    $router->get('event/get-events', 'EventController@getEvent');
-    $router->post('event/create', 'EventController@store');
-    $router->post('event/update', 'EventController@update');
-    $router->post('event/delete', 'EventController@delete');
+        // PARTICIPANT
+        $router->get('participant/get-participants', 'ParticipantController@index');
+        $router->post('participant/store', 'ParticipantController@store');
+        $router->post('participant/update', 'ParticipantController@update');
+        $router->post('participant/delete', 'ParticipantController@delete');
+        $router->post('participant/login', 'ParticipantController@login');
+
+        // EVENT
+        $router->get('event/get-events', 'EventController@getEvent');
+        $router->post('event/create', 'EventController@store');
+        $router->post('event/update', 'EventController@update');
+        $router->post('event/delete', 'EventController@delete');
+
+        // SESSIONS
+        $router->get('session/get-sessions', 'SessionController@getSession');
+        $router->get('session/get-event-sessions', 'SessionController@getEventSession');
+        $router->get('session/get-attendances', 'SessionController@getAttendance');
+    });
 });

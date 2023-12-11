@@ -4,21 +4,22 @@ namespace App\Helpers;
 
 use App\Models\Event;
 use App\Models\Participant;
+use Illuminate\Support\Str;
 
 class Helpers
 {
-    //USERS
-    public static function endPointUser($data)
+
+    public static function endPointRegistrationUser($data, $content)
     {
         $res = [];
         if ($data) {
             $res = [
-                'message'   => 'Success registration',
+                'message'   => 'Success ' . $content,
                 'status'    => 200
             ];
         } else {
             $res = [
-                'message'   => 'Failed registration',
+                'message'   => 'Failed ' . $content,
                 'status'    => 400
             ];
         }
@@ -30,6 +31,7 @@ class Helpers
         $res = [];
         if ($check) {
             $check->update($data);
+            $check->save();
             $res = [
                 'message'   => 'Success update data ' . $data['name'],
                 'status'    => 200

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Helpers\Helpers;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -23,7 +25,7 @@ class UserController extends Controller
         $data = [
             'name'  => $request->name,
             'email'  => $request->email,
-            'password'  => $request->password
+            'password'  => Hash::make($request->password)
         ];
         $this->validate($request, [
             'name'  => 'required|unique:App\Models\User,name|unique:App\Models\User,name',
@@ -32,7 +34,7 @@ class UserController extends Controller
         ]);
 
         $registration = User::insert($data);
-        return Helpers::endPointUser($registration);
+        return Helpers::endPointRegistrationUser($registration, 'registration');
     }
 
     function login(Request $request)
@@ -46,8 +48,24 @@ class UserController extends Controller
             'password'  => 'required'
         ]);
 
-        $login = User::where('email', $data['email'])->where('password', $data['password'])->first();
-        return Helpers::endPointUser($login);
+        $login = User::where('email', $data['email'])->first();
+        if (Hash::check($data['password'], $login->password) && $login->email == $data['email']) {
+            $token = Str::random(80);
+            $login->update([
+                'remember_token' => $token
+            ]);
+            $login->save();
+            return response()->json([
+                'message'   => 'Success login',
+                'token'     => $token,
+                'status'    => 200
+            ], 200);
+        } else {
+            return response()->json([
+                'message'   => 'Failed login',
+                'status'    => 400
+            ]);
+        }
     }
 
     function update(Request $request)
@@ -56,7 +74,7 @@ class UserController extends Controller
             'id'        => $request->id,
             'name'      => $request->name,
             'email'     => $request->email,
-            'password'  => $request->password
+            'password'  => Hash::make($request->password)
         ];
 
         $this->validate($request, [
@@ -79,8 +97,21 @@ class UserController extends Controller
 
     function logout(Request $request)
     {
-        $id = $request->id;
-        $user = User::where('id', $id)->first();
-        return Helpers::endPointUserLogout($user);
+        $token = $request->bearerToken();
+        $user = User::where('remember_token', $token)->first();
+        if ($user) {
+            $user->update([
+                'remember_token'    => ''
+            ]);
+            return response()->json([
+                'message'   => 'Success logout',
+                'status'    => 200
+            ], 200);
+        } else {
+            return response()->json([
+                'message'   => 'Failed logout',
+                'status'    => 401
+            ], 401);
+        }
     }
 }

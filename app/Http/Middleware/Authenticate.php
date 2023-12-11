@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\User;
 use Closure;
 use Illuminate\Contracts\Auth\Factory as Auth;
 
@@ -35,7 +36,9 @@ class Authenticate
      */
     public function handle($request, Closure $next, $guard = null)
     {
-        if ($this->auth->guard($guard)->guest()) {
+        $token = $request->bearerToken();
+        $user = User::where('remember_token', $request->bearerToken())->first();
+        if ($token != $user->remember_token) {
             return response('Unauthorized.', 401);
         }
 
