@@ -151,7 +151,7 @@ class Helpers
     public static function EventHandler($data)
     {
         $content = Event::insert($data)->hasAttached(
-            Participant::where('id', $data['id_peserta']),
+            Participant::where('id', $data['participants_id']),
             ['active' => true]
         );
         return Helpers::endPointEvent('Created event ', $content);
@@ -162,7 +162,7 @@ class Helpers
         $event = Event::find($data['id']);
         if ($event) {
             $event->update($data)->hasAttached(
-                Participant::where('id', $data['id_peserta']),
+                Participant::where('id', $data['participants_id']),
                 ['active' => true]
             );
         }

@@ -4,34 +4,36 @@ namespace App\Http\Controllers;
 
 use App\Helpers\Helpers;
 use App\Models\Event;
-use App\Models\Participant;
 use Illuminate\Http\Request;
 
 class EventController extends Controller
 {
-    function getEvent(Request $request)
+    function getEvent()
     {
-        $id = $request->id;
-        $event = Event::where('id', $id)->first();
-        return Helpers::endPointEvent($event, 'found ' . $event['event']);
+        $event = Event::all();
+        if ($event) {
+            return response()->json($event, 200);
+        } else {
+            return response()->json('Failed get event table', 400);
+        }
     }
 
     function store(Request $request)
     {
         $data = [
-            'id_peserta'    => $request->id_peserta,
-            'event'         => $request->event,
-            'location'      => $request->location,
-            'start'         => $request->start,
-            'end'           => $request->end
+            'participants_id'   => $request->participants_id,
+            'event'             => $request->event,
+            'location'          => $request->location,
+            'start'             => $request->start,
+            'end'               => $request->end
         ];
 
         $this->validate($request, [
-            'id_peserta'    => 'required',
-            'event'         => 'required',
-            'location'      => 'required',
-            'start'         => 'required|date',
-            'end'           => 'required|date'
+            'participants_id'   => 'required',
+            'event'             => 'required',
+            'location'          => 'required',
+            'start'             => 'required|date',
+            'end'               => 'required|date'
         ]);
 
         return Helpers::EventHandler($data);
@@ -40,19 +42,19 @@ class EventController extends Controller
     function update(Request $request)
     {
         $data = [
-            'id_peserta'    => $request->id_peserta,
-            'event'         => $request->event,
-            'location'      => $request->location,
-            'start'         => $request->start,
-            'end'           => $request->end
+            'participants_id'   => $request->participants_id,
+            'event'             => $request->event,
+            'location'          => $request->location,
+            'start'             => $request->start,
+            'end'               => $request->end
         ];
 
         $this->validate($request, [
-            'id_peserta'    => 'required',
-            'event'         => 'required',
-            'location'      => 'required',
-            'start'         => 'required|date',
-            'end'           => 'required|date'
+            'participants_id'   => 'required',
+            'event'             => 'required',
+            'location'          => 'required',
+            'start'             => 'required|date',
+            'end'               => 'required|date'
         ]);
 
         return Helpers::EventHandlerUpdate($data);

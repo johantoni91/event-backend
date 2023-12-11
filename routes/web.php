@@ -33,4 +33,9 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->post('event/create', 'EventController@store');
     $router->post('event/update', 'EventController@update');
     $router->post('event/delete', 'EventController@delete');
+
+    // SESSIONS
+    $router->get('session/get-sessions', 'SessionController@getSession');
+    $router->get('session/get-event-sessions', 'SessionController@getEventSession');
+    $router->get('session/get-attendances', 'SessionController@getAttendance');
 });
