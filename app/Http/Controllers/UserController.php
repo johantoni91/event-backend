@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Helpers\Helpers;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Crypt;
 
 class UserController extends Controller
 {
@@ -22,13 +21,13 @@ class UserController extends Controller
     function register(Request $request)
     {
         $data = [
-            'name'      => $request->name,
-            'email'     => $request->email,
-            'password'  => Crypt::encrypt($request->password)
+            'name'  => $request->name,
+            'email'  => $request->email,
+            'password'  => $request->password
         ];
         $this->validate($request, [
-            'name'      => 'required|unique:App\Models\User,name|unique:App\Models\User,name',
-            'email'     => 'required|email:rfc,dns|unique:App\Models\User,email',
+            'name'  => 'required|unique:App\Models\User,name|unique:App\Models\User,name',
+            'email'  => 'required|email:rfc,dns|unique:App\Models\User,email',
             'password'  => 'required'
         ]);
 
@@ -39,11 +38,11 @@ class UserController extends Controller
     function login(Request $request)
     {
         $data = [
-            'email'     => $request->email,
-            'password'  => Crypt::decrypt($request->password)
+            'email'  => $request->email,
+            'password'  => $request->password
         ];
         $this->validate($request, [
-            'email'     => 'required|email:rfc,dns',
+            'email'  => 'required|email:rfc,dns',
             'password'  => 'required'
         ]);
 
@@ -57,7 +56,7 @@ class UserController extends Controller
             'id'        => $request->id,
             'name'      => $request->name,
             'email'     => $request->email,
-            'password'  => Crypt::encrypt($request->password)
+            'password'  => $request->password
         ];
 
         $this->validate($request, [

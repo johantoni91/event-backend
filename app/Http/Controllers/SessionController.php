@@ -13,7 +13,7 @@ class SessionController extends Controller
 
     function getSession()
     {
-        $sessions = DB::table($this->table_session)->all();
+        $sessions = DB::table($this->table_session)->get();
         if ($sessions) {
             return response()->json($sessions, 200);
         } else {
@@ -23,7 +23,7 @@ class SessionController extends Controller
 
     function getEventSession()
     {
-        $event_session = DB::table($this->table_event_session)->all();
+        $event_session = DB::table($this->table_event_session)->get();
         if ($event_session) {
             return response()->json($event_session, 200);
         } else {
@@ -33,7 +33,7 @@ class SessionController extends Controller
 
     function getAttendance()
     {
-        $attendance = DB::table($this->table_attendance)->all();
+        $attendance = DB::table($this->table_attendance)->get();
         if ($attendance) {
             return response()->json($attendance, 200);
         } else {
