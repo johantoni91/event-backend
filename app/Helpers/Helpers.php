@@ -5,7 +5,6 @@ namespace App\Helpers;
 use App\Models\Event;
 use App\Models\Participant;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 
 class Helpers
 {
@@ -138,33 +137,32 @@ class Helpers
     public static function updateParticipant($data)
     {
         $participant = Participant::where('id', $data['id'])->first();
-        switch ($data) {
-            case ($data['name'] == null):
-                $participant->update([
-                    'whatsapp'  => $data['whatsapp'],
-                    'NIP'  => $data['NIP'],
-                    'keterangan'  => $data['keterangan'],
-                ]);
-            case ($data['whatsapp'] == null):
-                $participant->update([
-                    'name'  => $data['name'],
-                    'NIP'  => $data['NIP'],
-                    'keterangan'  => $data['keterangan'],
-                ]);
-            case ($data['NIP'] == null):
-                $participant->update([
-                    'whatsapp'  => $data['whatsapp'],
-                    'name'  => $data['name'],
-                    'keterangan'  => $data['keterangan'],
-                ]);
-            case ($data['keterangan'] == null):
-                $participant->update([
-                    'whatsapp'  => $data['whatsapp'],
-                    'NIP'  => $data['NIP'],
-                    'name'  => $data['name'],
-                ]);
-            default:
-                $participant->update($data);
+        if ($data['name'] == null) {
+            $participant->update([
+                'whatsapp'  => $data['whatsapp'],
+                'NIP'  => $data['NIP'],
+                'keterangan'  => $data['keterangan'],
+            ]);
+        } elseif ($data['whatsapp'] == null) {
+            $participant->update([
+                'name'  => $data['name'],
+                'NIP'  => $data['NIP'],
+                'keterangan'  => $data['keterangan'],
+            ]);
+        } elseif ($data['NIP'] == null) {
+            $participant->update([
+                'whatsapp'  => $data['whatsapp'],
+                'name'  => $data['name'],
+                'keterangan'  => $data['keterangan'],
+            ]);
+        } elseif ($data['keterangan'] == null) {
+            $participant->update([
+                'whatsapp'  => $data['whatsapp'],
+                'NIP'  => $data['NIP'],
+                'name'  => $data['name'],
+            ]);
+        } else {
+            $participant->update($data);
         }
         return Helpers::endPointParticipant('Update participant ', $participant, $participant['name']);
     }
@@ -189,10 +187,8 @@ class Helpers
 
     public static function EventHandler($data)
     {
-        $content = Event::insert($data)->hasAttached(
-            Participant::where('id', $data['participants_id']),
-            ['active' => true]
-        );
+        $content = Event::insert($data);
+
         return Helpers::endPointEvent('Created event ', $content);
     }
 
@@ -200,10 +196,7 @@ class Helpers
     {
         $event = Event::find($data['id']);
         if ($event) {
-            $event->update($data)->hasAttached(
-                Participant::where('id', $data['participants_id']),
-                ['active' => true]
-            );
+            $event->update($data);
         }
         return Helpers::endPointEvent('Update event ', $event);
     }

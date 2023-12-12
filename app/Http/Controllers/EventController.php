@@ -4,36 +4,35 @@ namespace App\Http\Controllers;
 
 use App\Helpers\Helpers;
 use App\Models\Event;
+use App\Models\Sessions;
 use Illuminate\Http\Request;
 
 class EventController extends Controller
 {
     function getEvent()
     {
-        $event = Event::all();
+        $event = Event::with('sessions')->get();
         if ($event) {
             return response()->json($event, 200);
         } else {
-            return response()->json('Failed get event table', 400);
+            return response()->json('Event null', 400);
         }
     }
 
     function store(Request $request)
     {
         $data = [
-            'participants_id'   => $request->participants_id,
-            'event'             => $request->event,
-            'location'          => $request->location,
-            'start'             => $request->start,
-            'end'               => $request->end
+            'event'     => $request->event,
+            'location'  => $request->location,
+            'start'     => $request->start,
+            'end'       => $request->end,
         ];
 
         $this->validate($request, [
-            'participants_id'   => 'required',
-            'event'             => 'required',
-            'location'          => 'required',
-            'start'             => 'required|date',
-            'end'               => 'required|date'
+            'event'    => 'required',
+            'location' => 'required',
+            'start'    => 'required',
+            'end'      => 'required',
         ]);
 
         return Helpers::EventHandler($data);
@@ -42,19 +41,17 @@ class EventController extends Controller
     function update(Request $request)
     {
         $data = [
-            'participants_id'   => $request->participants_id,
-            'event'             => $request->event,
-            'location'          => $request->location,
-            'start'             => $request->start,
-            'end'               => $request->end
+            'id'        => $request->id,
+            'event'     => $request->event,
+            'location'  => $request->location,
+            'start'     => $request->start,
+            'end'       => $request->end,
         ];
 
         $this->validate($request, [
-            'participants_id'   => 'required',
-            'event'             => 'required',
-            'location'          => 'required',
-            'start'             => 'required|date',
-            'end'               => 'required|date'
+            'id'        => 'required',
+            'event'     => 'required',
+            'location'  => 'required',
         ]);
 
         return Helpers::EventHandlerUpdate($data);
@@ -63,13 +60,15 @@ class EventController extends Controller
     function delete(Request $request)
     {
         $id = $request->id;
-        $find = Event::where('id', $id)->first();
+        $findEvent = Event::where('id', $id)->first();
+        $findSession = Sessions::where('events_id', $id)->get();
         $res = [];
 
-        if ($find) {
-            $find->delete();
+        if ($findEvent) {
+            $findEvent->delete();
+            $findSession->delete();
             $res = [
-                'message'   => 'Success delete event' . $find->event,
+                'message'   => 'Success delete event' . $findEvent->event,
                 'status'    => 200
             ];
         } else {

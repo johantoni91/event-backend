@@ -37,11 +37,11 @@ class Authenticate
     public function handle($request, Closure $next, $guard = null)
     {
         $token = $request->bearerToken();
-        $user = User::where('remember_token', $request->bearerToken())->first();
-        if ($token != $user->remember_token) {
+        $user = User::where('remember_token', $token)->first();
+        if ($user) {
+            return $next($request);
+        } else {
             return response('Unauthorized.', 401);
         }
-
-        return $next($request);
     }
 }

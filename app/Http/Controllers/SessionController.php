@@ -33,10 +33,8 @@ class SessionController extends Controller
     function postSession(Request $request)
     {
         $data = [
-            'absen'     => $request->absen,
-            'makan'     => $request->makan,
-            'souvenir'  => $request->souvenir,
-            'checkout'  => $request->checkout,
+            'events_id' => $request->events_id,
+            'name'      => $request->name,
         ];
         return Helpers::postSession($data, $this->table_session);
     }
@@ -53,9 +51,9 @@ class SessionController extends Controller
     function postAttendance(Request $request)
     {
         $data = [
-            'participants_id'   => $request->participants_id,
-            'events_id'         => $request->events_id,
-            'sessions_id'       => $request->sessions_id
+            'NIP'         => $request->participants_id,
+            'events_id'   => $request->events_id,
+            'sessions_id' => $request->sessions_id
         ];
         return Helpers::postSession($data, $this->table_attendance);
     }

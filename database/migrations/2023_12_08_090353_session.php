@@ -13,10 +13,9 @@ return new class extends Migration
     {
         Schema::create('sessions', function (Blueprint $table) {
             $table->id();
-            $table->text('absen');
-            $table->text('makan');
-            $table->text('souvenir');
-            $table->date('sheckout');
+            $table->unsignedBigInteger('events_id');
+            $table->text('name');
+            $table->foreign('events_id')->references('id')->on('events');
         });
     }
 

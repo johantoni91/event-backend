@@ -80,6 +80,7 @@ $app->middleware([
 
 $app->routeMiddleware([
     'auth' => App\Http\Middleware\Authenticate::class,
+    'participants' => App\Http\Middleware\Participants::class,
 ]);
 
 /*
