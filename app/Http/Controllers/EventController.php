@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\Helpers;
 use App\Models\Event;
+use App\Models\EventSession;
 use App\Models\Sessions;
 use Illuminate\Http\Request;
 
@@ -61,19 +62,18 @@ class EventController extends Controller
     {
         $id = $request->id;
         $findEvent = Event::where('id', $id)->first();
-        $findSession = Sessions::where('events_id', $id)->get();
+        $findSession = EventSession::where('events_id', $id)->get();
         $res = [];
 
         if ($findEvent) {
-            $findEvent->delete();
             $findSession->delete();
             $res = [
-                'message'   => 'Success delete event' . $findEvent->event,
+                'message'   => 'Success delete event-session',
                 'status'    => 200
             ];
         } else {
             $res = [
-                'message'   => 'Failed delete event',
+                'message'   => 'Failed delete event-session',
                 'status'    => 400
             ];
         }

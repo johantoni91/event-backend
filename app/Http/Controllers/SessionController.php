@@ -33,7 +33,6 @@ class SessionController extends Controller
     function postSession(Request $request)
     {
         $data = [
-            'events_id' => $request->events_id,
             'name'      => $request->name,
         ];
         return Helpers::postSession($data, $this->table_session);

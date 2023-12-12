@@ -13,9 +13,7 @@ return new class extends Migration
     {
         Schema::create('sessions', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('events_id');
             $table->text('name');
-            $table->foreign('events_id')->references('id')->on('events');
         });
     }
 
