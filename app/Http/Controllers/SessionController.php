@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\Helpers;
 use App\Models\Attendance;
+use App\Models\EventSession;
 use App\Models\Participant;
 use App\Models\Sessions;
 use Illuminate\Http\Request;
@@ -53,7 +54,7 @@ class SessionController extends Controller
             'sessions_id'   => $request->sessions_id
         ];
         if ($data) {
-            Sessions::insert($data);
+            EventSession::insert($data);
             return response()->json(['message' => 'Success insert event session'], 200);
         } else {
             return response()->json(['message' => 'Failed insert event session'], 300);

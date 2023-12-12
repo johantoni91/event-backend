@@ -67,11 +67,11 @@ class EventController extends Controller
             $findSession = EventSession::where('events_id', $id)->get();
             $dataSesi = [];
             foreach ($findSession as $sesi) {
-                $dataSesi = $sesi;
+                $dataSesi[] = $sesi->id;
             }
             if ($dataSesi) {
-                $findEvent->delete();
                 EventSession::destroy($dataSesi);
+                $findEvent->delete();
                 $res = [
                     'message'   => 'Success delete event-session',
                     'status'    => 200
