@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\Helpers;
+use App\Models\Participant;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -49,11 +50,19 @@ class SessionController extends Controller
 
     function postAttendance(Request $request)
     {
-        $data = [
-            'NIP'         => $request->participants_id,
-            'events_id'   => $request->events_id,
-            'sessions_id' => $request->sessions_id
-        ];
-        return Helpers::postSession($data, $this->table_attendance);
+        $NIP = $request->NIP;
+        $check = Participant::where('NIP', $NIP)->first();
+        if ($check) {
+            $data = [
+                'participants_id'   => $request->participants_id,
+                'events_id'         => $request->events_id,
+                'sessions_id'       => $request->sessions_id
+            ];
+            return Helpers::postSession($data, $this->table_attendance);
+        } else {
+            return response()->json([
+                'message'   => 'Post Attendance failed'
+            ], 400);
+        }
     }
 }

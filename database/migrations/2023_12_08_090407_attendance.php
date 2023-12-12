@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('attendances', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('NIP');
+            $table->unsignedBigInteger('participants_id');
             $table->unsignedBigInteger('events_id');
             $table->unsignedBigInteger('sessions_id');
-            $table->foreign('NIP')->references('id')->on('participants');
+            $table->foreign('participants_id')->references('id')->on('participants');
             $table->foreign('events_id')->references('id')->on('events');
             $table->foreign('sessions_id')->references('id')->on('sessions');
         });
