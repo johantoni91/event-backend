@@ -76,8 +76,8 @@ class SessionController extends Controller
 
     function postAttendance(Request $request)
     {
-        $id = $request->id;
-        $check = Participant::where('id', $id)->first();
+        $NIP = $request->NIP;
+        $check = Participant::where('NIP', $NIP)->first();
         if ($check) {
             $data = [
                 'events_id'         => $request->events_id,

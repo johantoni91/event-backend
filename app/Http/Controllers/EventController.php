@@ -70,22 +70,21 @@ class EventController extends Controller
                 $dataSesi[] = $sesi->id;
             }
             if ($dataSesi) {
-                $findEvent->sessions()->delete();
                 $findEvent->delete();
                 $res = [
-                    'message'   => 'Success delete event-session',
+                    'message'   => 'Success delete event',
                     'status'    => 200
                 ];
             } else {
                 $res = [
-                    'message'   => 'Event Session is null',
-                    'status'    => 300
+                    'message'   => 'Success delete event without event sessions',
+                    'status'    => 201
                 ];
             }
         } else {
             $res = [
                 'message'   => 'Failed delete event-session',
-                'status'    => 400
+                'status'    => 300
             ];
         }
         return response()->json($res, $res['status']);
