@@ -62,15 +62,24 @@ class EventController extends Controller
     {
         $id = $request->id;
         $findEvent = Event::where('id', $id)->first();
-        $findSession = EventSession::where('events_id', $id)->get();
         $res = [];
-
         if ($findEvent) {
-            $findSession->delete();
-            $res = [
-                'message'   => 'Success delete event-session',
-                'status'    => 200
-            ];
+            $findSession = EventSession::where('events_id', $id)->get();
+            $dataSesi = [];
+            foreach ($findSession as $sesi) {
+                $dataSesi = $sesi;
+            }
+            if ($dataSesi) {
+                $res = [
+                    'message'   => 'Success delete event-session',
+                    'status'    => 200
+                ];
+            } else {
+                $res = [
+                    'message'   => 'Event Session is null',
+                    'status'    => 300
+                ];
+            }
         } else {
             $res = [
                 'message'   => 'Failed delete event-session',
