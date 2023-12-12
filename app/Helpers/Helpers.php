@@ -209,10 +209,4 @@ class Helpers
             return response()->json('Failed get table', 400);
         }
     }
-
-    public static function postSession($data, $table)
-    {
-        $data_table = DB::table($table)->insert($data);
-        return response()->json($data_table, 200);
-    }
 }

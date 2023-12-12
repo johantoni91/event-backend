@@ -70,6 +70,8 @@ class EventController extends Controller
                 $dataSesi = $sesi;
             }
             if ($dataSesi) {
+                $findEvent->delete();
+                EventSession::destroy($dataSesi);
                 $res = [
                     'message'   => 'Success delete event-session',
                     'status'    => 200
