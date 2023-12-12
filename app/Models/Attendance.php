@@ -8,6 +8,8 @@ class Attendance extends Model
 {
     protected $table = 'attendances';
     protected $fillable = [
-        'participants_id', 'events_id', 'session_id'
+        'participants_id', 'events_id', 'sessions_id'
     ];
+
+    public $timestamps = false;
 }

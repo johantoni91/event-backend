@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\Helpers;
 use App\Models\Attendance;
+use App\Models\Event;
 use App\Models\EventSession;
 use App\Models\Participant;
 use App\Models\Sessions;
@@ -54,34 +55,62 @@ class SessionController extends Controller
             'sessions_id'   => $request->sessions_id
         ];
         if ($data) {
-            EventSession::insert($data);
-            return response()->json(['message' => 'Success insert event session'], 200);
+            $events_id = Event::where('id', $data['events_id'])->first();
+            $sessions_id = Sessions::where('id', $data['sessions_id'])->first();
+            if ($events_id == null || $sessions_id == null) {
+                return response()->json([
+                    'message'   => 'Event or Session is not found.'
+                ], 301);
+            } else {
+                $arr = [
+                    'events_id' => $events_id->id,
+                    'sessions_id' => $sessions_id->id
+                ];
+                EventSession::insert($arr);
+                return response()->json(['message' => 'Success insert event session'], 200);
+            }
         } else {
-            return response()->json(['message' => 'Failed insert event session'], 300);
+            return response()->json(['message' => 'Failed insert event session'], 304);
         }
     }
 
     function postAttendance(Request $request)
     {
-        $NIP = $request->NIP;
-        $check = Participant::where('NIP', $NIP)->first();
+        $id = $request->id;
+        $check = Participant::where('id', $id)->first();
         if ($check) {
             $data = [
-                'participants_id'   => $check->id,
                 'events_id'         => $request->events_id,
                 'sessions_id'       => $request->sessions_id
             ];
-            $check_v2 = Attendance::where('participants_id', $data['participants_id'])->where('events_id', $data['events_id'])->where('sessions_id', $data['sessions_id'])->first();
+            $check_v2 = Attendance::where('participants_id', $check->id)->where('events_id', $data['events_id'])->where('sessions_id', $data['sessions_id'])->first();
+
             if ($check_v2) {
                 return response()->json([
                     'message'   => 'Post Attendance failed, participant was absenced before'
                 ], 300);
             } else {
-                $save = Attendance::create($data);
-                if ($save) {
-                    return response()->json(['message' => 'Success insert Attendance'], 200);
+                $events_id = Event::where('id', $data['events_id'])->first();
+                $sessions_id = Sessions::where('id', $data['sessions_id'])->first();
+                if ($events_id && $sessions_id == null) {
+                    return response()->json([
+                        'message'   => 'Session is null.'
+                    ], 301);
+                } elseif ($events_id == null && $sessions_id) {
+                    return response()->json([
+                        'message'   => 'Event is null.'
+                    ], 302);
                 } else {
-                    return response()->json(['message' => 'Failed insert Attendance'], 301);
+                    $save = Attendance::create([
+                        'participants_id'   => $check->id,
+                        'events_id'         => $events_id->id,
+                        'sessions_id'       => $sessions_id->id,
+                    ]);
+                    if ($save) {
+                        return response()->json(['message' => 'Success insert Attendance'], 200);
+                    } else {
+                        return response()->json(['message' => 'Failed insert Attendance'], 303);
+                    }
                 }
             }
         } else {

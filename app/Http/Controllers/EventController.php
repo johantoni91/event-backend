@@ -61,7 +61,7 @@ class EventController extends Controller
     function delete(Request $request)
     {
         $id = $request->id;
-        $findEvent = Event::where('id', $id)->first();
+        $findEvent = Event::with('sessions')->where('id', $id)->first();
         $res = [];
         if ($findEvent) {
             $findSession = EventSession::where('events_id', $id)->get();
@@ -70,7 +70,7 @@ class EventController extends Controller
                 $dataSesi[] = $sesi->id;
             }
             if ($dataSesi) {
-                EventSession::destroy($dataSesi);
+                $findEvent->sessions()->delete();
                 $findEvent->delete();
                 $res = [
                     'message'   => 'Success delete event-session',

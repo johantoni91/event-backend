@@ -4,7 +4,6 @@ namespace App\Helpers;
 
 use App\Models\Event;
 use App\Models\Participant;
-use Illuminate\Support\Facades\DB;
 
 class Helpers
 {
@@ -198,7 +197,7 @@ class Helpers
         if ($event) {
             $event->update($data);
         }
-        return Helpers::endPointEvent('Update event ', $event);
+        return Helpers::endPointEvent($event, 'Update event');
     }
 
     public static function endPointSession($data)
