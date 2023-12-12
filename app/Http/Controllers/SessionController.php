@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\Helpers;
+use App\Models\Attendance;
 use App\Models\Participant;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -58,7 +59,14 @@ class SessionController extends Controller
                 'events_id'         => $request->events_id,
                 'sessions_id'       => $request->sessions_id
             ];
-            return Helpers::postSession($data, $this->table_attendance);
+            $check_v2 = Attendance::where('participants_id', $data['participants_id'])->where('events_id', $data['events_id'])->where('sessions_id', $data['sessions_id'])->first();
+            if ($check_v2) {
+                return response()->json([
+                    'message'   => 'Post Attendance failed, participant was absenced before'
+                ], 400);
+            } else {
+                return Helpers::postSession($data, $this->table_attendance);
+            }
         } else {
             return response()->json([
                 'message'   => 'Post Attendance failed'
