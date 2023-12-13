@@ -51,8 +51,8 @@ class EventController extends Controller
         ];
 
         $this->validate($request, [
-            'event'    => 'required|regex:/^[\pL\s]+$/u|min:3',
-            'location' => 'required|regex:/^[\pL\s]+$/u|min:3',
+            'event'    => 'required',
+            'location' => 'required',
             'start'    => 'required',
             'end'      => 'required',
         ]);
