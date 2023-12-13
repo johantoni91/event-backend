@@ -5,19 +5,40 @@ namespace App\Http\Controllers;
 use App\Helpers\Helpers;
 use App\Models\Event;
 use App\Models\EventSession;
-use App\Models\Sessions;
+use App\Models\Participant;
+use App\Models\SessionAttendance;
 use Illuminate\Http\Request;
 
 class EventController extends Controller
 {
     function getEvent()
     {
-        $event = Event::with('sessions')->get();
+        $event = Event::select('id', 'event', 'location', 'start', 'end')->orderBy('created_at', 'desc')->with('sessions')->get();
         if ($event) {
             return response()->json($event, 200);
         } else {
             return response()->json('Event null', 400);
         }
+    }
+
+    function find($event_id)
+    {
+        $id = Event::select('id', 'event', 'location', 'start', 'end')->with('sessions')->where('id', $event_id)->first();
+        $arr = [];
+        if ($id) {
+            $arr = [
+                'code'  => 200,
+                'message'   => 'Get event by id success',
+                'data'  => $id
+            ];
+        } else {
+            $arr = [
+                'code'  => 300,
+                'message'   => 'Get event by id failed',
+                'data'  => $id
+            ];
+        }
+        return response()->json($arr, $arr['code']);
     }
 
     function store(Request $request)
@@ -30,13 +51,45 @@ class EventController extends Controller
         ];
 
         $this->validate($request, [
-            'event'    => 'required',
-            'location' => 'required',
+            'event'    => 'required|regex:/^[\pL\s]+$/u|min:3',
+            'location' => 'required|regex:/^[\pL\s]+$/u|min:3',
             'start'    => 'required',
             'end'      => 'required',
         ]);
 
         return Helpers::EventHandler($data);
+    }
+
+    function registration(Request $request, $event_id)
+    {
+        $nip = $request->nip;
+        $check_nip = Participant::where('NIP', $nip)->first();
+        $check_events = SessionAttendance::with('events')->where('participants_id', $nip)->first();
+        $event = Event::where('id', $event_id)->first();
+        $arr = [];
+        if (!$check_nip) {
+            $arr = [
+                "code"      => 400,
+                "message"   => "NIP tidak valid"
+            ];
+        } else {
+            if ($check_events) {
+                $arr = [
+                    "code"      => 400,
+                    "message"   => "Peserta sudah melakukan registrasi pada event " . $check_events->events->event
+                ];
+            } else {
+                SessionAttendance::insert([
+                    'participants_id' => $nip,
+                    'events_id'     => $event_id
+                ]);
+                $arr = [
+                    "code"      => 200,
+                    "message"   => "Berhasil registrasi event " . $event->event
+                ];
+            }
+        }
+        return response()->json($arr, $arr['code']);
     }
 
     function update(Request $request)
@@ -51,8 +104,8 @@ class EventController extends Controller
 
         $this->validate($request, [
             'id'        => 'required',
-            'event'     => 'required',
-            'location'  => 'required',
+            'event'     => 'required|regex:/^[\pL\s]+$/u|min:3',
+            'location'  => 'required|regex:/^[\pL\s]+$/u|min:3',
         ]);
 
         return Helpers::EventHandlerUpdate($data);

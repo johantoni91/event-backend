@@ -12,12 +12,32 @@ class UserController extends Controller
 {
     function index()
     {
-        $user = User::orderBy('name')->get();
+        $user = User::select('id', 'name', 'email', 'remember_token')->orderBy('created_at', 'desc')->get();
         return response()->json([
             'data'      => $user,
             'message'   => 'Success get all users',
             'status'    => true
         ], 200);
+    }
+
+    function find($user_id)
+    {
+        $id = User::select('id', 'name', 'email', 'remember_token')->where('id', $user_id)->first();
+        $arr = [];
+        if ($id) {
+            $arr = [
+                'code'  => 200,
+                'message'   => 'Get user by id success',
+                'data'  => $id
+            ];
+        } else {
+            $arr = [
+                'code'  => 300,
+                'message'   => 'Get user by id failed',
+                'data'  => $id
+            ];
+        }
+        return response()->json($arr, $arr['code']);
     }
 
     function register(Request $request)

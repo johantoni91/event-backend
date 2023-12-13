@@ -188,7 +188,7 @@ class Helpers
     {
         $content = Event::insert($data);
 
-        return Helpers::endPointEvent('Created event ', $content);
+        return Helpers::endPointEvent($content, 'Created event');
     }
 
     public static function EventHandlerUpdate($data)

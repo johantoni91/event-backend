@@ -2,8 +2,12 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Participant;
+use App\Models\User;
+use Faker\Core\Number;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Testing\Fakes\Fake;
 
 class DatabaseSeeder extends Seeder
 {
@@ -14,6 +18,18 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // $this->call('UsersTableSeeder');
+        // for ($i = 0; $i < 11; $i++) {
+        //     User::insert([
+        //         'name' => $this->faker->name(),
+        //         'email' => "admin@gmail.com",
+        //         'password' => Hash::make('123456'),
+        //     ]);
+        //     Participant::insert([
+        //         'name' => "Admin",
+        //         'whatsapp' => Emai,
+        //         'NIP' => Number::rand(3, 16),
+        //         'keterangan' => str_random($i),
+        //     ]);
+        // }
     }
 }

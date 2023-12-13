@@ -11,8 +11,8 @@ class Participant extends Model
         'name', 'whatsapp', 'keterangan', 'NIP'
     ];
 
-    public function events()
-    {
-        return $this->belongsToMany(Attendance::class, 'NIP');
-    }
+    // public function events()
+    // {
+    //     return $this->belongsToMany(Attendance::class, 'NIP');
+    // }
 }

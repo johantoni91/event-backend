@@ -37,14 +37,37 @@ class SessionController extends Controller
 
     function postSession(Request $request)
     {
-        $data = [
-            'name'      => $request->name,
-        ];
-        if ($data) {
-            Sessions::insert($data);
+        $name = ['name' => $request->name];
+        if ($name) {
+            Sessions::insert($name);
             return response()->json(['message' => 'Success insert session'], 200);
         } else {
             return response()->json(['message' => 'Failed insert session'], 300);
+        }
+    }
+
+    function updateSession(Request $request)
+    {
+        $id = $request->id;
+        $name = ['name' => $request->name];
+        $update = Sessions::where('id', $id)->first();
+        if ($update) {
+            $update->update(['name' => $name]);
+            return response()->json(['message' => 'Success update session'], 200);
+        } else {
+            return response()->json(['message' => 'Failed update session'], 300);
+        }
+    }
+
+    function deleteSession(Request $request)
+    {
+        $id = $request->id;
+        $del = Sessions::where('id', $id)->first();
+        if ($del) {
+            $del->delete();
+            return response()->json(['message' => 'Success delete session'], 200);
+        } else {
+            return response()->json(['message' => 'Failed delete session'], 300);
         }
     }
 
