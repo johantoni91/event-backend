@@ -8,6 +8,7 @@ use App\Models\EventSession;
 use App\Models\Participant;
 use App\Models\SessionAttendance;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class EventController extends Controller
 {
@@ -43,22 +44,20 @@ class EventController extends Controller
 
     function findAbsence($event_id)
     {
-        $events_id = SessionAttendance::where('events_id', $event_id);
-        $participants = Participant::select('id', 'name', 'NIP', 'whatsapp', 'keterangan')->whereExists($events_id)->get();
-        $arr = [];
-        if ($participants) {
-            $arr = [
-                'code'  => 200,
-                'message'   => 'Get event by id success',
-                'data'  => $participants
-            ];
-        } else {
-            $arr = [
-                'code'  => 300,
-                'message'   => 'Get event by id failed'
-            ];
+        $event = Event::find($event_id);
+
+        if (!$event) {
+            return response()->json([
+                'code' => 404,
+                'message' => "Event Nor Found",
+            ]);
         }
-        return response()->json($arr, $arr['code']);
+
+        return response()->json([
+            'code' => 200,
+            'message' => "Get all event's attendances",
+            'data' => $event->participants,
+        ]);
     }
 
     function store(Request $request)

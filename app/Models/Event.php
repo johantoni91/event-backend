@@ -13,4 +13,9 @@ class Event extends Pivot
     {
         return $this->belongsToMany(Sessions::class, 'event_sessions', 'events_id', 'sessions_id');
     }
+
+    public function participants()
+    {
+        return $this->belongsToMany(Participant::class, 'session_attendances', 'events_id', 'participants_id');
+    }
 }
