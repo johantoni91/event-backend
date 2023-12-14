@@ -10,4 +10,9 @@ class SessionAttendance extends Model
     protected $fillable = [
         'participants_id', 'events_id'
     ];
+
+    public function event()
+    {
+        return $this->belongsTo(Event::class, 'events_id');
+    }
 }

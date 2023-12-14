@@ -83,7 +83,6 @@ class EventController extends Controller
     {
         $nip = $request->nip;
         $check_nip = Participant::where('NIP', $nip)->first();
-        $check_events = SessionAttendance::where('participants_id', $nip)->first();
         $event = Event::where('id', $event_id)->first();
         $arr = [];
         if (!$check_nip) {
@@ -92,10 +91,11 @@ class EventController extends Controller
                 "message"   => "NIP tidak valid"
             ];
         } else {
+            $check_events = SessionAttendance::where('participants_id', $check_nip->id)->where('events_id', $event_id)->first();
             if ($check_events) {
                 $arr = [
                     "code"      => 400,
-                    "message"   => "Peserta sudah melakukan registrasi pada event " . $check_events->events->event
+                    "message"   => "Peserta sudah melakukan registrasi pada event " . $check_events->event->event
                 ];
             } else {
                 SessionAttendance::insert([
