@@ -6,11 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class SessionAttendance extends Model
 {
-    protected $table = 'session_attendance';
-    protected $guarded = ['id'];
-
-    public function events()
-    {
-        return $this->belongsTo(Event::class, 'events_id', 'id');
-    }
+    protected $table = 'session_attendances';
+    protected $fillable = [
+        'participants_id', 'events_id'
+    ];
 }

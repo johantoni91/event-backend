@@ -18,12 +18,20 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     // NON AUTHENTICATED
     $router->post('user/register', 'UserController@register');
     $router->post('user/login', 'UserController@login');
+
+    // PARTICIPANTS
     $router->get('participant/get-participants', 'ParticipantController@index');
     $router->get('participant/{participant_id:\d+}', 'ParticipantController@find');
     $router->get('participant/participant', 'ParticipantController@nip');
     $router->post('participant/store', 'ParticipantController@store');
-    $router->get('event/{event_id:\d+}', 'EventController@find');
 
+
+    // ABSENSI
+    $router->get('event/{event_id:\d+}', 'EventController@find'); //Find event by id params
+    $router->get('event/{event_id:\d+}/attendances', 'EventController@findAbsence'); // find attendances by event id with params
+    $router->get('event/{event_id:\d+}/session/{session_id:\d+}/attendances', 'SessionController@findAbsence'); // find attendances by session id with params
+    $router->post('event/{event_id:\d+}/attendances', 'EventController@registration'); // registration participant to event
+    $router->post('event/{event_id:\d+}/session/{session_id:\d+}/attendances', 'SessionController@registration'); // registration participant per session
 
 
     // AUTHENTICATED
@@ -35,23 +43,21 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('user/logout', 'UserController@logout');
 
 
-        // PARTICIPANTS CONTROL
+        // PARTICIPANTS
         $router->post('participant/update', 'ParticipantController@update');
         $router->post('participant/delete', 'ParticipantController@delete');
 
 
         // EVENT
         $router->get('event/get-events', 'EventController@getEvent');
-        $router->get('event/get-events', 'EventController@getEvent');
-        $router->get('event/{event_id:\d+}/attendances', 'EventController@find');
         $router->post('event/create', 'EventController@store');
-        $router->post('event/{event_id:\d+}/attendances', 'EventController@registration');
         $router->post('event/update', 'EventController@update');
         $router->post('event/delete', 'EventController@delete');
 
 
         // SESSIONS
         $router->get('session/get-sessions', 'SessionController@getSession');
+        $router->get('session/{session_id:\d+}/get-sessions', 'SessionController@findSession');
         $router->post('session/post-sessions', 'SessionController@postSession');
         $router->post('session/update-session', 'SessionController@updateSession');
         $router->post('session/delete-session', 'SessionController@deleteSession');

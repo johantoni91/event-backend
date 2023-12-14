@@ -172,23 +172,36 @@ class Helpers
         $res = [];
         if ($data) {
             $res = [
+                'code'      => 200,
                 'message'   => 'Success ' . $action,
-                'status'    => 200
+                'data'      => $data
             ];
         } else {
             $res = [
                 'message'   => 'Failed ' . $action,
-                'status'    => 400
+                'code'    => 400
             ];
         }
-        return response()->json($res, $res['status']);
+        return response()->json($res, $res['code']);
     }
 
     public static function EventHandler($data)
     {
         $content = Event::insert($data);
-
-        return Helpers::endPointEvent($content, 'Created event');
+        $res = [];
+        if ($content) {
+            $res = [
+                'code'      => 200,
+                'message'   => 'Success create event',
+                'data'      => Event::select('id', 'event', 'location', 'start', 'end')->where('event', $data['event'])->where('location', $data['location'])->get()
+            ];
+        } else {
+            $res = [
+                'message'   => 'Failed create event',
+                'code'    => 400
+            ];
+        }
+        return response()->json($res, $res['code']);
     }
 
     public static function EventHandlerUpdate($data)

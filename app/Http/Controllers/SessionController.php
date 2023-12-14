@@ -35,14 +35,105 @@ class SessionController extends Controller
         return Helpers::endPointSession($attendance);
     }
 
+    function registration(Request $request, $event_id, $session_id)
+    {
+        $nip = $request->nip;
+        $this->validate($request, [
+            'nip'    => 'required'
+        ]);
+        $id = Participant::where('nip', $nip)->first();
+        $arr = [];
+        if ($id) {
+            $absence = Attendance::where('participants_id', $id->id)->where('events_id', $event_id)->where('sessions_id', $session_id)->first();
+            $events_id = Event::where('id', $event_id)->first();
+            $sessions_id = Sessions::where('id', $session_id)->first();
+            if (!$absence) {
+                Attendance::insert([
+                    'participants_id' => $id->id,
+                    'sessions_id' => $sessions_id->id,
+                    'events_id' => $events_id->id,
+                ]);
+                $arr = [
+                    'code'  => 200,
+                    'message' => "Berhasil absen pada session " . $absence->sessions_id
+                ];
+            } else {
+                $arr = [
+                    'code'  => 400,
+                    'message' => "Peserta sudah melakukan absensi pada session " . $absence->sessions_id
+                ];
+            }
+        } else {
+            $arr = [
+                "code"      => 400,
+                "message"   => "NIP tidak valid"
+            ];
+        }
+        return response()->json($arr, $arr['code']);
+    }
+
+    function findAbsence($event_id, $session_id)
+    {
+        $events_id = Attendance::where('events_id', $event_id)->where('sessions_id', $session_id);
+        $participants = Participant::select('id', 'name', 'NIP', 'whatsapp', 'keterangan')->whereExists($events_id)->get();
+        $get = [];
+        $arr = [];
+        if ($participants) {
+            foreach ($participants as $part) {
+                $get = $part;
+            }
+            $arr = [
+                'code'              => 200,
+                'message'           => "Get all sessions's attendances",
+                'data'              => $get,
+                'is_present'        => true
+            ];
+        } else {
+            $arr = [
+                'code'              => 200,
+                'message'           => "Get all sessions's attendances",
+                // 'data'              => $get
+                'is_present'        => false
+            ];
+        }
+        return response()->json($arr, $arr['code']);
+
+        // 'id'            => $participants->id,
+        //             'name'          => $participants->name,
+        //             'nip'           => $participants->NIP,
+        //             'whatsapp'      => $participants->whatsapp,
+        //             'keterangan'    => $participants->keterangan,
+        //             'is_present'    => false
+    }
+
+    function findSession($session_id)
+    {
+        $find = Sessions::select('id', 'name')->where('id', $session_id)->first();
+        $arr = [];
+        if ($find) {
+            $arr = [
+                'code'      => 200,
+                'message'   => "Data session " . $find->id,
+                'data'      => $find
+            ];
+        } else {
+            $arr = [
+                'code'      => 400,
+                'message'   => "Data session not found"
+            ];
+        }
+        return response()->json($arr, $arr['code']);
+    }
+
     function postSession(Request $request)
     {
         $name = ['name' => $request->name];
-        if ($name) {
+        $check = Sessions::where('name', $request->name)->first();
+        if (!$check) {
             Sessions::insert($name);
             return response()->json(['message' => 'Success insert session'], 200);
         } else {
-            return response()->json(['message' => 'Failed insert session'], 300);
+            return response()->json(['message' => 'Failed insert session, session has been added.'], 300);
         }
     }
 
@@ -52,7 +143,7 @@ class SessionController extends Controller
         $name = ['name' => $request->name];
         $update = Sessions::where('id', $id)->first();
         if ($update) {
-            $update->update(['name' => $name]);
+            $update->update($name);
             return response()->json(['message' => 'Success update session'], 200);
         } else {
             return response()->json(['message' => 'Failed update session'], 300);

@@ -11,8 +11,24 @@ class Participant extends Model
         'name', 'whatsapp', 'keterangan', 'NIP'
     ];
 
-    // public function events()
-    // {
-    //     return $this->belongsToMany(Attendance::class, 'NIP');
-    // }
+    public function sessionAttendances()
+    {
+        return $this->belongsToMany(
+            Sessions::class,
+            'session_attendances',
+            'participants_id',
+            'events_id'
+        );
+    }
+
+    public function attendances()
+    {
+        return $this->belongsToMany(
+            Sessions::class,
+            'attendances',
+            'participants_id',
+            'events_id',
+            'sessions_id'
+        );
+    }
 }

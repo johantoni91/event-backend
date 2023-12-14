@@ -41,6 +41,26 @@ class EventController extends Controller
         return response()->json($arr, $arr['code']);
     }
 
+    function findAbsence($event_id)
+    {
+        $events_id = SessionAttendance::where('events_id', $event_id);
+        $participants = Participant::select('id', 'name', 'NIP', 'whatsapp', 'keterangan')->whereExists($events_id)->get();
+        $arr = [];
+        if ($participants) {
+            $arr = [
+                'code'  => 200,
+                'message'   => 'Get event by id success',
+                'data'  => $participants
+            ];
+        } else {
+            $arr = [
+                'code'  => 300,
+                'message'   => 'Get event by id failed'
+            ];
+        }
+        return response()->json($arr, $arr['code']);
+    }
+
     function store(Request $request)
     {
         $data = [
@@ -64,7 +84,7 @@ class EventController extends Controller
     {
         $nip = $request->nip;
         $check_nip = Participant::where('NIP', $nip)->first();
-        $check_events = SessionAttendance::with('events')->where('participants_id', $nip)->first();
+        $check_events = SessionAttendance::where('participants_id', $nip)->first();
         $event = Event::where('id', $event_id)->first();
         $arr = [];
         if (!$check_nip) {
@@ -80,8 +100,8 @@ class EventController extends Controller
                 ];
             } else {
                 SessionAttendance::insert([
-                    'participants_id' => $nip,
-                    'events_id'     => $event_id
+                    'participants_id' => $check_nip->id,
+                    'events_id'     => $event->id
                 ]);
                 $arr = [
                     "code"      => 200,
@@ -104,8 +124,8 @@ class EventController extends Controller
 
         $this->validate($request, [
             'id'        => 'required',
-            'event'     => 'required|regex:/^[\pL\s]+$/u|min:3',
-            'location'  => 'required|regex:/^[\pL\s]+$/u|min:3',
+            'event'     => 'required',
+            'location'  => 'required',
         ]);
 
         return Helpers::EventHandlerUpdate($data);
@@ -129,6 +149,7 @@ class EventController extends Controller
                     'status'    => 200
                 ];
             } else {
+                $findEvent->delete();
                 $res = [
                     'message'   => 'Success delete event without event sessions',
                     'status'    => 201
