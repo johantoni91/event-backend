@@ -74,29 +74,53 @@ class SessionController extends Controller
 
     function findAbsence($event_id, $session_id)
     {
-        $events_id = Attendance::where('events_id', $event_id)->where('sessions_id', $session_id);
-        $participants = Participant::select('id', 'name', 'NIP', 'whatsapp', 'keterangan')->whereExists($events_id)->get();
-        $get = [];
-        $arr = [];
-        if ($participants) {
-            foreach ($participants as $part) {
-                $get = $part;
-            }
-            $arr = [
-                'code'              => 200,
-                'message'           => "Get all sessions's attendances",
-                'data'              => $get,
-                'is_present'        => true
+        $attendances = Attendance::where('events_id', $event_id)->where('sessions_id', $session_id)->get();
+
+        $event = Event::find($event_id);
+
+        $participant_ids = $attendances->pluck('participants_id')->toArray();
+
+        $participants = $event->participants->map(function($participant) use ($participant_ids) {
+            return [
+                'id' => $participant['id'],
+                'name' => $participant['name'],
+                'whatsapp' => $participant['whatsapp'],
+                'NIP' => $participant['NIP'],
+                'keterangan' => $participant['keterangan'],
+                'is_present' => in_array($participant['id'], $participant_ids)
             ];
-        } else {
-            $arr = [
-                'code'              => 200,
-                'message'           => "Get all sessions's attendances",
-                // 'data'              => $get
-                'is_present'        => false
-            ];
-        }
-        return response()->json($arr, $arr['code']);
+        });
+
+        return response()->json([
+            'code' => 200,
+            'message' => "Get all sessions's attendances",
+            'data' => $participants,
+        ]);
+
+
+//        $events_id = Attendance::where('events_id', $event_id)->where('sessions_id', $session_id);
+//        $participants = Participant::select('id', 'name', 'NIP', 'whatsapp', 'keterangan')->whereExists($events_id)->get();
+//        $get = [];
+//        $arr = [];
+//        if ($participants) {
+//            foreach ($participants as $part) {
+//                $get = $part;
+//            }
+//            $arr = [
+//                'code'              => 200,
+//                'message'           => "Get all sessions's attendances",
+//                'data'              => $get,
+//                'is_present'        => true
+//            ];
+//        } else {
+//            $arr = [
+//                'code'              => 200,
+//                'message'           => "Get all sessions's attendances",
+//                // 'data'              => $get
+//                'is_present'        => false
+//            ];
+//        }
+//        return response()->json($arr, $arr['code']);
 
         // 'id'            => $participants->id,
         //             'name'          => $participants->name,
