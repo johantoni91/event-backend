@@ -8,5 +8,5 @@ class Sessions extends Model
 {
     protected $table = 'sessions';
     protected $guarded = ['id'];
-    public $timestamp = false;
+    public $timestamps = false;
 }
